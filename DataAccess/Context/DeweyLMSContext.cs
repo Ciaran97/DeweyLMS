@@ -23,5 +23,7 @@ namespace DataAccess.Context
 
         public DbSet<DeweyClass> DeweyClasses {get; set;}
 
+        public DbSet<UserPoints> UserPoints { get; set; }
+
     }
 }

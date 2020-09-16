@@ -1,53 +1,126 @@
 ﻿
-@model List<string>
+@model DeweyLMS.Models.ReOrderData
 
 @{
-    ViewBag.Title = "StartGame";
-    int i = 0;
+    ViewBag.Title = "Practice";
+
 }
 
-   
 
-<h2>StartGame</h2>
 
-@foreach (var callNumber in Model)
+<h2 class="my-3">Sort the Call Numbers</h2>
+
+<p class="my-3">Sort the call numbers below starting with the lowest in the first position.</p>
+
+<p>Attempt: @Session["AttemptNumber"]</p>
+
+@if (!Model.IsBatchCorrect)
 {
-    i++;
+    <div class="alert alert-danger" role="alert">
+        The order you provided is incorrect. Please try again
+    </div>
+}
+
+
+
+@using (Html.BeginForm("StartGame", "ReplacingBooks", FormMethod.Post))
+{
+
 
 
     <div class="row">
-
-        <div class="col">
-            <div class="row">
-
-                <div class="col">
-                    @i :
+        <div class="col-6">
+            <div class="row my-3">
+                <div class="col-2">
+                    First:
                 </div>
-
-                <div class="col">
-                    <div class="dropdown my-2">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown button
-                            
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            @foreach (var call in Model)
-                            {
-                                <a class="dropdown-item">@call</a>
-                            }
-                        </div>
-                    </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option1, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
                 </div>
             </div>
-            
 
+            <div class="row my-3">
+                <div class="col-2">
+                    Third:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option3, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-2">
+                    Fifth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option5, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-2">
+                    Seventh:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option7, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-2">
+                    Ninth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option9, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
         </div>
+        <div class="col-6">
+            <div class="row my-3">
+                <div class="col-2">
+                    Second:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option2, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
 
-        <div class="col">
+            <div class="row my-3">
+                <div class="col-2">
+                    Fourth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option4, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
 
-            
+            <div class="row my-3">
+                <div class="col-2">
+                    Sixth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option6, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-2">
+                    Eighth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option8, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
+
+            <div class="row my-3">
+                <div class="col-2">
+                    Tenth:
+                </div>
+                <div class="col-4">
+                    @Html.DropDownListFor(x => Model.Option10, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
+                </div>
+            </div>
         </div>
-
     </div>
-
+    <input type="submit" value="Submit" class="btn btn-success" />
 }

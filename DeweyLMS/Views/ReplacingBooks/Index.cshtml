@@ -3,5 +3,17 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2 class="my-3">Replacing Books</h2>
+
+
+<div class="container my-5">
+
+
+
+    <p>During this activity you will be required to sort the randomly generated call numbers from lowest to highest. If you get the order correct on your first try you will be awarded a point which will be displayed on the leaderboard, however if you fail to get the answer within three attempts the call numbers will reset as well as the counter.</p>
+
+
+    @Html.ActionLink("Start Game", "StartGame", "ReplacingBooks", new { area = "" }, new { @class = "btn btn-success" })
+
+</div>
 

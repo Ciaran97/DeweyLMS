@@ -11,18 +11,21 @@
 <body class="pt-0">
     <div class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </a>
+            
+                @Html.ActionLink("Dewey Decimal LMS", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+           
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         </div>
             <div class="navbar-collapse collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { @class="nav-link" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", new { @class = "nav-link" })</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Learn", "Index", "Home", new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("Leader Board", "LeaderBoard", "Home",new { area="" }, new { @class = "nav-link" })</li>
+                    }
+
                 </ul>
                
                     @Html.Partial("_LoginPartial")

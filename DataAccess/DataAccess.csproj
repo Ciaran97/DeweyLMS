@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Context\DeweyLMSContext.cs" />
     <Compile Include="Entity\DeweyClass.cs" />
+    <Compile Include="Entity\UserPoints.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<DeweyLMS.Models.LeaderBoardItem>
+
+@{
+    ViewBag.Title = "LeaderBoard";
+}
+
+<h2 class="my-4">Leader Board</h2>
+
+<table class="table my-4">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.UserEmail)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TotalPoints)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.UserEmail)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalPoints)
+        </td>
+    
+    </tr>
+}
+
+</table>
