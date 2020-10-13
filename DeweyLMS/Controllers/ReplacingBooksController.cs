@@ -1,4 +1,4 @@
-﻿
+﻿using Microsoft.Ajax.Utilities;
 using DeweyLMS.Models;
 using Microsoft.AspNet.Identity;
 using System;
@@ -14,13 +14,13 @@ namespace DeweyLMS.Controllers
     {
 
         UserPointsContext context = new UserPointsContext();
-     
+
 
 
         // GET: ReplacingBooks
         public ActionResult Index()
         {
-            
+
 
             return View();
         }
@@ -28,121 +28,71 @@ namespace DeweyLMS.Controllers
         [Authorize]
         public ActionResult StartGame()
         {
-
             Session["AttemptNumber"] = 1;
             ReOrderData data = GetRandomCallsigns();
 
-           
+
             Session["CallNumbers"] = data.Options.ToList();
             return View(data);
         }
 
         [HttpPost]
-        public ActionResult StartGame(ReOrderData collection)
+        public ActionResult StartGame(ReOrderData newdata)
         {
-            List <SelectListItem> selection = Session["CallNumbers"] as List<SelectListItem>;
+            List<SelectListItem> selection = Session["CallNumbers"] as List<SelectListItem>;
+            List<int> userResults = new List<int>();
+            List<int> sortedList = new List<int>();
+
+              int Attempt = int.Parse(Session["AttemptNumber"].ToString());
+
 
             ReOrderData reorder = new ReOrderData();
 
-
-            string Option1 = selection[int.Parse(collection.Option1)].Text;
-
-            string Option2 = selection[int.Parse(collection.Option2)].Text;
-
-            string Option3 = selection[int.Parse(collection.Option3)].Text;
-
-            string Option4 = selection[int.Parse(collection.Option4)].Text;
-
-            string Option5 = selection[int.Parse(collection.Option5)].Text;
-
-            string Option6 = selection[int.Parse(collection.Option6)].Text;
-
-            string Option7 = selection[int.Parse(collection.Option7)].Text;
-
-            string Option8 = selection[int.Parse(collection.Option8)].Text;
-
-            string Option9 = selection[int.Parse(collection.Option9)].Text;
-
-            string Option10 = selection[int.Parse(collection.Option10)].Text;
+            reorder.Options = selection;
 
 
 
-            string[] call1 = Option1.Split('.');
-
-            string[] call2 = Option2.Split('.');
-
-            string[] call3 = Option3.Split('.');
-
-            string[] call4 = Option4.Split('.');
-
-            string[] call5 = Option5.Split('.');
-
-            string[] call6 = Option6.Split('.');
-
-            string[] call7 = Option7.Split('.');
-
-            string[] call8 = Option8.Split('.');
-
-            string[] call9 = Option9.Split('.');
-
-            string[] call10 = Option10.Split('.');
-
-            List<int> userResults = new List<int>();
-
-            userResults.Add(int.Parse(call1[0].ToString() + call1[1].ToString()));
-
-            userResults.Add(int.Parse(call2[0].ToString() + call2[1].ToString()));
-
-            userResults.Add(int.Parse(call3[0].ToString() + call3[1].ToString()));
-
-            userResults.Add(int.Parse(call4[0].ToString() + call4[1].ToString()));
-
-            userResults.Add(int.Parse(call5[0].ToString() + call5[1].ToString()));
-
-            userResults.Add(int.Parse(call6[0].ToString() + call6[1].ToString()));
-
-            userResults.Add(int.Parse(call7[0].ToString() + call7[1].ToString()));
-
-            userResults.Add(int.Parse(call8[0].ToString() + call8[1].ToString()));
-
-            userResults.Add(int.Parse(call9[0].ToString() + call9[1].ToString()));
-
-            userResults.Add(int.Parse(call10[0].ToString() + call10[1].ToString()));
-
-            List<int> SortedResult = new List<int>();
-
-            foreach(SelectListItem item in selection)
+            for (int i = 0; i < 10; i++)
             {
-                string Text = item.Text;
+                List<String> Provided = new List<String>();
+                List<String> UserSelected = new List<String>();
 
-                string[] numbers = Text.Split('.');
+                Provided = selection[i].Text.Split('.').ToList();
+                UserSelected = selection[int.Parse(newdata.Results.ToList().ElementAt(i))].Text.Split('.').ToList();
 
-                SortedResult.Add(int.Parse(numbers[0].ToString() + numbers[1].ToString()));
+                String generatedValue = Provided[0] + Provided[1];
+                String selectedValue = UserSelected[0] + UserSelected[1];
+
+                userResults.Add(int.Parse(selectedValue));
+                sortedList.Add(int.Parse(generatedValue));
+                Debug.WriteLine(selectedValue);
+
             }
 
-            SortedResult.Sort();
+            sortedList.Sort();
             reorder.IsBatchCorrect = true;
 
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < 10; i++)
             {
-                if(SortedResult[i] != userResults[i])
+                if (sortedList[i] != userResults[i])
                 {
                     reorder.IsBatchCorrect = false;
+                    Debug.WriteLine("WRONG");
 
                 }
-               
-            }
 
-            int Attempt = int.Parse(Session["AttemptNumber"].ToString());
+            }
 
             if (reorder.IsBatchCorrect)
             {
-
-                if(Attempt == 1)
+                Session["AttemptNumber"] = 1;
+                if (Attempt == 1)
                 {
                     string userid = User.Identity.GetUserId();
-                   UserPoint up = context.UserPoints.Where(a => a.UserId.Equals(userid)).FirstOrDefault();
+                    UserPoint up = context.UserPoints.Where(a => a.UserId.Equals(userid)).FirstOrDefault();
                     reorder.PointAwarded = true;
+                    Debug.WriteLine("Point Awarded");
+
                     if (up != null)
                     {
                         up.TotalPoints = int.Parse(up.TotalPoints.ToString()) + 1;
@@ -158,29 +108,38 @@ namespace DeweyLMS.Controllers
                         context.UserPoints.Add(point);
                         context.SaveChanges();
                     }
-                    Debug.WriteLine(User.Identity.GetUserId());
+                    var details = new { Attempt = Attempt, Correct = false, Reload = false, PointAwarded = true };
                     
+                    return Json(details);
                 }
-
-                return View("Index");
-            }
-            else
+                    
+                var test = new { Attempt = Attempt, Correct = true, Reload = false, PointAwarded = false };
+                    
+                    return Json(test);
+            } else
             {
-               
-                if(Attempt == 3)
-                {
 
-                   return RedirectToAction("StartGame");
+                if (Attempt == 3)
+                {
+                    var test = new { Attempt = 1, Correct = false, Reload = true, PointAwarded = false };
+                    return Json(test);
                 }
                 else
                 {
-                Session["AttemptNumber"] = Attempt + 1;
-                reorder.Options = selection;
-                return View(reorder);
-                }                
-            }            
-        }       
+                    Attempt++;
+                    Session["AttemptNumber"] = Attempt;
+                    reorder.Options = selection;
+                    var test = new { Attempt = Attempt, Correct = false, Reload = false, PointAwarded = false };
+                    
+                    return Json(test);
+                }
+            }
 
+        }
+
+
+
+ 
         public ReOrderData GetRandomCallsigns()
         {
             Random _random = new Random();
@@ -195,9 +154,12 @@ namespace DeweyLMS.Controllers
             ReOrderData reorder = new ReOrderData();
 
             reorder.Options = CallNumbers;
-            reorder.IsBatchCorrect = true;
+            reorder.IsBatchCorrect = false;
+            reorder.Attempt = 1;
 
             return reorder;
         }     
     }
 }
+
+

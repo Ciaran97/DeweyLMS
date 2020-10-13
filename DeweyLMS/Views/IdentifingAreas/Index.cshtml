@@ -1,0 +1,227 @@
+﻿@model DeweyLMS.Models.IdentifyingAreasModel
+
+@{
+    ViewBag.Title = "Index";
+    @Scripts.Render("~/bundles/jquery")
+
+}
+
+<h2>Indetifying Areas</h2>
+
+<style>
+    #feedback {
+        font-size: 1.4em;
+    }
+
+    #selectable .ui-selecting {
+        background: gray;
+    }
+
+    #selectable .ui-selected {
+        color: orange;
+    }
+
+    #selectable {
+        list-style-type: none;
+   
+    }
+
+        #selectable li {
+            font-size: 1.4em;
+        }
+
+    #selectable1 .ui-selecting {
+        background: gray;
+    }
+
+    #selectable1 .ui-selected {
+        color: orange;
+    }
+
+    #selectable1 {
+        list-style-type: none;
+    
+    }
+
+        #selectable1 li {
+            font-size: 1.4em;
+        }
+
+    .match-1 {
+        color: green;
+    }
+
+    .match-2 {
+        color: blue;
+    }
+
+    .match-3 {
+        color: pink;
+    }
+</style>
+
+<script type="text/javascript">
+
+    $(function () {
+        $("#errorMessage").hide();
+        $("#successMessage").hide();
+
+
+        var selected = false;
+        var FirstSelection;
+        var SecondSelection;
+        var array = new Array();
+
+        $("#selectable").selectable({
+            selected: function (event, ui) {
+                if (selected) {
+                    console.log(ui.selected.textContent.trim());
+                    SecondSelection = ui.selected.textContent.trim();
+                    array.push({ Definition: SecondSelection, CallNumber: FirstSelection })
+                    if (array.length === 1) {
+                        ui.selected.classList.add("match-1");
+
+                    } else if (array.length === 2) {
+                        ui.selected.classList.add("match-2");
+
+                    } else if (array.length === 3) {
+                        ui.selected.classList.add("match-3");
+
+                    } else
+                        if (array.length === 4) {
+                            SendResults(array);
+                            console.log(array);
+                        }
+                    FirstSelection = null;
+                    SecondSelection = null;
+                    selected = false;
+
+
+
+
+
+                } else {
+                    console.log("No Selection");
+                    $("#errorMessage").append("Please select from column 1 first");
+                    $("#errorMessage").show();
+                    setTimeout("$('#errorMessage').hide()", 5000);
+
+                }
+
+
+            },
+            unselected: function (e, ui) {
+                SecondSelection = null;
+         
+
+
+            }
+        });
+
+        $("#selectable1").selectable({
+            selected: function (event, ui) {
+                if (selected) {
+                    $("li").removeClass("match-1")
+                }
+                console.log(ui.selected.textContent.trim());
+                FirstSelection = ui.selected.textContent.trim();
+                if (array.length === 0) {
+                    ui.selected.classList.add("match-1");
+
+                } else if (array.length === 1) {
+                    ui.selected.classList.add("match-2");
+
+                } else if (array.length === 2) {
+                    ui.selected.classList.add("match-3");
+
+                }
+
+                selected = true
+            },
+            unselected: function (e, ui) {
+                FirstSelection = null;
+            }
+            
+        });
+
+        $("#NewQuestionBtn").click(function () {
+            location.reload();
+
+        });
+
+      
+    });
+
+    function SendResults(ResultsArray) {
+       
+  
+        $.ajax({
+            type: 'POST',
+            url: '/IdentifingAreas/ReturnResults',
+            data: JSON.stringify(ResultsArray),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                console.log(data)
+                $("#successMessage").append(data);
+                $("#successMessage").show();
+                setTimeout("$('#successMessage').hide()", 5000);
+            }, 
+            complete: function () {
+                console.log("Complete")
+            }
+        });
+    }
+
+</script>
+<div class="container">
+    <div class="alert alert-danger" id="errorMessage">
+        <p></p>
+    </div>
+    <div class="alert alert-success" id="successMessage">
+        <p></p>
+    </div>
+</div>
+
+    <p>Match the Given Call Numbers with their Definitions or vice versa. Select a value in the first column and then the corresponding column to match from the second column. You will be awarded a point if all 4 values are guessed correctly.</p>
+
+<div id="modify-view-elements" class="border shadow-lg p-4">
+    <div class="row">
+        
+        <div class="col-5">
+            <ol id="selectable1" class="list-group text-center">
+                <h2>Call Numbers</h2>
+
+                @for (int i = 0; i < 4; i++)
+                {
+
+                    <li class="list-group-item ui-widget-content my-3 border">
+                        @Model.CallNumbers[i]
+                    </li>
+
+                }
+
+            </ol>
+        </div>
+        <div class="col-7">
+            <ul id="selectable" class="list-group text-center">
+                <h2>Definitions</h2>
+                @foreach (string s in Model.CallDefinitions)
+                {
+
+                    <li class="list-group-item ui-widget-content my-3 border">
+                        @s
+                    </li>
+
+
+                }
+
+            </ul>
+        </div>
+    </div>
+    <button class="btn btn-danger m-3" id="NewQuestionBtn">New Question</button>
+
+</div>
+
+
+

@@ -3,124 +3,104 @@
 
 @{
     ViewBag.Title = "Practice";
-
+    @Scripts.Render("~/bundles/jquery")
 }
 
+<style>
+    #sortable {
+        list-style-type: none;
+    }
+</style>
 
+<script type="text/javascript">
+
+    $(function () {
+        $("#successAlert").hide();
+        $("#Alert").hide();
+ 
+        $("#sortable").sortable();
+        $("#sortable").disableSelection();
+        $("#save-view-preferences").click(saveUserPreferenceDetails);
+    });
+
+    function saveUserPreferenceDetails() {
+      
+        var obj = new Object();
+        obj.Results = new Array();
+        
+        $("#sortable li").each(function (index) {
+            obj.Results.push($(this).find($(".ItemId")).val())
+        });
+        
+        $.ajax({
+            type: 'POST',
+            url: '/ReplacingBooks/StartGame',
+            data: JSON.stringify(obj),
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data, obj) {
+                var response = data; debugger;
+
+               
+                    console.log(data);
+                if (response.PointAwarded) {
+                    $("#AwardPoint").text("Success, You got the order correct on your first attempt. You have been awarded a point!");
+                    $("#successAlert").show();
+                    setTimeout("$('#successAlert').hide()", 5000);
+                }
+
+                if (response.Reload) {
+
+                    location.reload();
+                }
+                if (response.Correct) {
+                    $("#AwardPoint").text("Success, You got the order correct but have not been awarded a point!");
+                    $("#successAlert").show();
+                    setTimeout("$('#successAlert').hide()", 5000);
+                } else {
+                    $("#result").text("Incorrect Please try again.")
+                    $("#attemptno").text("Attempt: " + response.Attempt);
+                    $("#Alert").show();
+                    setTimeout("$('#Alert').hide()", 5000);
+
+                }
+                console.log(data);
+            }
+        });
+    }
+
+</script>
 
 <h2 class="my-3">Sort the Call Numbers</h2>
 
-<p class="my-3">Sort the call numbers below starting with the lowest in the first position.</p>
+<p class="my-3">Sort the call numbers below from lowest to highest.</p>
 
-<p>Attempt: @Session["AttemptNumber"]</p>
+<p id="attemptno">Attempt: 1</p>
 
-@if (!Model.IsBatchCorrect)
-{
-    <div class="alert alert-danger" role="alert">
-        The order you provided is incorrect. Please try again
+<div class="alert alert-success" id="successAlert">
+    <p id="AwardPoint"></p>
+
+</div>
+
+
+<div class="alert alert-danger" id="Alert">
+    <p id="result"></p>
     </div>
-}
+    <div id="modify-view-elements">
+        <ul id="sortable" class="list-group text-center w-25">
 
-
-
-@using (Html.BeginForm("StartGame", "ReplacingBooks", FormMethod.Post))
-{
-
-
-
-    <div class="row">
-        <div class="col-6">
-            <div class="row my-3">
-                <div class="col-2">
-                    First:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option1, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Third:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option3, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Fifth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option5, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Seventh:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option7, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Ninth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option9, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="row my-3">
-                <div class="col-2">
-                    Second:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option2, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Fourth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option4, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Sixth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option6, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Eighth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option8, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-
-            <div class="row my-3">
-                <div class="col-2">
-                    Tenth:
-                </div>
-                <div class="col-4">
-                    @Html.DropDownListFor(x => Model.Option10, new SelectList(Model.Options, "Value", "Text"), new { @class = "custom-select" })
-                </div>
-            </div>
-        </div>
+            @foreach (SelectListItem s in Model.Options)
+            {
+                <li class="list-group-item my-1 border">
+                    @s.Text
+                    @Html.Hidden("Id-" + s.Value, s.Value, new { @class = "ItemId" })
+                </li>
+            }
+        </ul>
     </div>
-    <input type="submit" value="Submit" class="btn btn-success" />
-}
+
+    <button id="save-view-preferences" class="btn btn-success mt-4">
+        Save Changes
+    </button>
+
+   
