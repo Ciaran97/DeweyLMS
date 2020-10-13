@@ -1,10 +1,11 @@
 # DeweyLMS
 
 ## Setup
-1. Unzip project folder
-2. Open project solution using Visual Studio
-3. Build Project
-4. run Project
+1. Restore DeweyLMS.bak into SSMS
+2. Unzip project folder
+3. Open project solution using Visual Studio
+4. Build Project
+5. run Project
 
 ## Using Application
 ### Replacing Books
