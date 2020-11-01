@@ -1,0 +1,130 @@
+﻿@model DeweyLMS.Models.FindingCallNumbersModel
+
+@{
+    ViewBag.Title = "Index";
+    @Scripts.Render("~/bundles/jquery")
+
+}
+
+    <style>
+        #selectable .ui-selecting {
+        background: gray;
+        }
+
+        #selectable .ui-selected {
+        color: orange;
+        }
+
+        #selectable {
+        list-style-type: none;
+        }
+
+        #selectable li {
+        font-size: 1.4em;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+    $(function () {
+        $("#errorMessage").hide();
+        $("#successMessage").hide();
+
+        var res;
+
+
+        $("#selectable").selectable({
+            selected: function (event, ui) {
+
+               res = ui.selected.textContent.trim();
+
+
+            },
+            unselected: function (e, ui) {
+                res = null;
+
+            }
+        });
+
+        $("#Submit").click(function () {
+            var obj = JSON.stringify({
+                'correct': "@Model.ThirdLevelKey @Model.ThirdLevelDescription",
+                'selected': res
+            })
+            SendResults(obj);
+
+        });
+
+    });
+
+
+    function SendResults(obj) {
+
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ReturnResults")',
+            data: obj,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                if (data === 'incorrect') {
+                    $("#errorMessage").append("Your selection was incorrect, Please wait for the next question and try again.");
+                    $("#errorMessage").show();
+                    setTimeout("location.reload()", 5000);
+                    console.log("Wrong");
+                    
+                } else if (data === 'correct'){
+                    console.log("Right");
+                    $("#successMessage").append("Correct, youve been awarded a point.");
+                    $("#successMessage").show();
+                    setTimeout("location.reload()", 5000);
+                    
+                }
+                
+               
+
+            },
+            failure: function (errMsg) {
+                console.log(errMsg);
+            }
+        });
+    }
+    </script>
+
+
+<h2>Finding Call Numbers</h2>
+
+
+<p>Select the First Level Call Number that the following description fits.</p>
+
+<p>@Model.ThirdLevelDescription</p>
+
+
+<div class="col-5 container">
+    <h2>Call Numbers</h2>
+    <ol id="selectable" class="list-group text-center">
+
+
+        @foreach (string call in Model.Options)
+        {
+
+            <li class="list-group-item ui-widget-content my-3 border">
+                @call
+            </li>
+
+        }
+
+    </ol>
+
+    <button class="btn btn-danger m-3" id="Submit">Submit</button>
+    <div class="container">
+        <div class="alert alert-danger" id="errorMessage">
+            <p></p>
+        </div>
+        <div class="alert alert-success" id="successMessage">
+            <p></p>
+        </div>
+    </div>
+</div>
+

@@ -23,7 +23,6 @@
 
     #selectable {
         list-style-type: none;
-   
     }
 
         #selectable li {
@@ -40,7 +39,6 @@
 
     #selectable1 {
         list-style-type: none;
-    
     }
 
         #selectable1 li {
@@ -65,6 +63,8 @@
     $(function () {
         $("#errorMessage").hide();
         $("#successMessage").hide();
+        $("#secondMatch").hide();
+
 
 
         var selected = false;
@@ -112,7 +112,7 @@
             },
             unselected: function (e, ui) {
                 SecondSelection = null;
-         
+
 
 
             }
@@ -141,7 +141,7 @@
             unselected: function (e, ui) {
                 FirstSelection = null;
             }
-            
+
         });
 
         $("#NewQuestionBtn").click(function () {
@@ -149,12 +149,12 @@
 
         });
 
-      
+
     });
 
     function SendResults(ResultsArray) {
-       
-  
+
+
         $.ajax({
             type: 'POST',
             url: '/IdentifingAreas/ReturnResults',
@@ -166,7 +166,7 @@
                 $("#successMessage").append(data);
                 $("#successMessage").show();
                 setTimeout("$('#successMessage').hide()", 5000);
-            }, 
+            },
             complete: function () {
                 console.log("Complete")
             }
@@ -183,11 +183,11 @@
     </div>
 </div>
 
-    <p>Match the Given Call Numbers with their Definitions or vice versa. Select a value in the first column and then the corresponding column to match from the second column. You will be awarded a point if all 4 values are guessed correctly.</p>
+<p>Match the Given Call Numbers with their Definitions or vice versa. Select a value in the first column and then the corresponding column to match from the second column. You will be awarded a point if all 4 values are guessed correctly.</p>
 
-<div id="modify-view-elements" class="border shadow-lg p-4">
+<div id="firstMatch" class="border shadow-lg p-4">
     <div class="row">
-        
+
         <div class="col-5">
             <ol id="selectable1" class="list-group text-center">
                 <h2>Call Numbers</h2>
@@ -222,6 +222,8 @@
     <button class="btn btn-danger m-3" id="NewQuestionBtn">New Question</button>
 
 </div>
+
+
 
 
 

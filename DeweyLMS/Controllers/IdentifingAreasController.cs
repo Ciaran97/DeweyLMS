@@ -25,10 +25,9 @@ namespace DeweyLMS.Controllers
 
             Random _random = new Random();
 
-            int type = 1;/*_random.Next(2);*/
+            int type = _random.Next(2);
 
-            if(type == 1)
-            {
+          
                 List<string> callList = new List<string>();
                 List<string> callDef = new List<string>();
                 List<int> callDigits = new List<int>();
@@ -47,18 +46,9 @@ namespace DeweyLMS.Controllers
                         CallNumbers.TryGetValue(callDigit, out value);
                         callList.Add(callNum);
                         callDef.Add(value);
-                        Debug.WriteLine(value);
                     }
                     else
                     {
-                        /*
-                        int FirstDigit = callDigit;
-                        while (FirstDigit >= 10)
-                        {
-                            FirstDigit = (FirstDigit - (FirstDigit % 10)) / 10;
-                        }
-                        */
-
                         int FirstDigit = int.Parse(callNum.Substring(0, 1));
                        if(!callDigits.Contains(FirstDigit))
                         {
@@ -67,21 +57,15 @@ namespace DeweyLMS.Controllers
                             CallNumbers.TryGetValue(FirstDigit, out value);
                             callList.Add(callNum);
                             callDef.Add(value);
-                            Debug.WriteLine(value);
 
                         }
 
 
                     }
                     
-                }
+                
                 callDef.Sort();
 
-                foreach(string str in callDef)
-                {
-                    Debug.WriteLine(str);
-
-                }
 
 
                 areas.CallDefinitions = callDef;
@@ -111,15 +95,9 @@ namespace DeweyLMS.Controllers
                 CallNumbers.TryGetValue(FirstDigit, out definition);
                 if (definition.Equals(value.Definition))
                 {
-                    Debug.WriteLine("Correct!!");
                     correct++;
                 }
-                else
-                {
-                    Debug.WriteLine("Youre a Failure!!");
-
-                }
-                Debug.WriteLine("Definition: " + value.Definition + ", CallNumber: " + value.callNumber);
+            
 
             }
 

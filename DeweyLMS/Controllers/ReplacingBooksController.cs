@@ -65,7 +65,6 @@ namespace DeweyLMS.Controllers
 
                 userResults.Add(int.Parse(selectedValue));
                 sortedList.Add(int.Parse(generatedValue));
-                Debug.WriteLine(selectedValue);
 
             }
 
@@ -77,7 +76,6 @@ namespace DeweyLMS.Controllers
                 if (sortedList[i] != userResults[i])
                 {
                     reorder.IsBatchCorrect = false;
-                    Debug.WriteLine("WRONG");
 
                 }
 
@@ -91,7 +89,6 @@ namespace DeweyLMS.Controllers
                     string userid = User.Identity.GetUserId();
                     UserPoint up = context.UserPoints.Where(a => a.UserId.Equals(userid)).FirstOrDefault();
                     reorder.PointAwarded = true;
-                    Debug.WriteLine("Point Awarded");
 
                     if (up != null)
                     {
