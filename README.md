@@ -19,3 +19,8 @@
 2. Select your first option in the left column with the corresponding choice on the right being selected straight after this pair will be given a color.
 3. once all 4 pairs are set your results for the question will be given
 4. Click the "New Question" button to generate a new question.
+
+### Finding Call Numbers
+1. after signing in select the red "Finding Call Numbers" Button
+2. select the classification that the given definition belongs to
+
